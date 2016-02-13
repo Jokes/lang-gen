@@ -259,6 +259,36 @@
      wrd
      '())))
 
+(deflang Gnomish
+  (λ ()
+    (let* ([cn '(l r t d n m k s v f h p b w z j th)]
+           [fcn (RL 15 (append cn '(pr qu)))]
+           [pcn (RL 15 (append cn '(ll rr ss st)))]
+           [vw  '(i o e a u)]
+           [vvw (RL 30 (append vw '()))]
+           [pvw (RL 30 (append vw '(y)))]
+           [syls (RL 30 `((,fcn ,pvw ,pcn) (,fcn ,pvw) (,vvw ,pcn) (,vvw)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
+     '([#rx"lll+" "ll"] [#rx"rrr+" "rr"] [#rx"sss+" "ss"] [#rx"ss+t" "st"]))))
+
+(deflang Eriali
+  (λ ()
+    (let* ([cn '(l r n m t d s th k v f h z dh sh zh)]
+           [fcn (RL 15 (append cn '(p b)))]
+           [pcn (RL 15 (append cn '()))]
+           [vw '(e i a u y o)]
+           [vvw (RL 30 (append vw '()))]
+           [pvw (RL 30 (append vw '()))]
+           [syls (RL 30 `((,vvw ,pcn) (,fcn ,pvw) (,fcn ,pvw ,pcn) (,vvw)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
+     '())))
+
 (define (word lang [wn 4] [wr #t])
   ((Lang-rep lang) ((Lang-raw lang) (if wr (add1 (random wn)) wn))))
 (define (name lang [wn 4] [wr #t])
@@ -292,7 +322,8 @@
                nlist))) 
        langs))
 (define langlist
-  (list Lat Ertydon Dwarvish Skif Anavasi Aiha Aluvai Ceirene Mahlirou Obsidian Elemental Peskae))
+  (list Lat Ertydon Dwarvish Skif Anavasi Aiha Aluvai Ceirene Mahlirou Obsidian 
+        Elemental Peskae Gnomish Eriali))
 
 (define (text lang n [wn 4] [wr #t])
   (apply string-append (map (λ (s) (string-append s " ")) (words lang n wn wr))))
