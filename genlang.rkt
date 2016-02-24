@@ -289,6 +289,36 @@
      wrd
      '())))
 
+(deflang Svaaric
+  (λ ()
+    (let* ([cn '(s k v t r l f m n d j h sh y c kh z g p b)]
+           [fcn (RL 15 (append cn '()))]
+           [pcn (RL 15 (append cn '()))]
+           [vw '(i e a u o ii y aa ai)]
+           [vvw (RL 30 (append vw '()))]
+           [pvw (RL 30 (append vw '()))]
+           [syls (RL 30 `((,vvw ,pcn) (,fcn ,pvw) (,fcn ,pvw ,pcn) (,vvw)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
+     '())))
+
+(deflang Gemstone
+  (λ ()
+    (let* ([cn '(l n r m v z f s d t k p h g b)]
+           [fcn (RL 15 (append cn '()))]
+           [pcn (RL 15 (append cn '()))]
+           [vw '(i a e u o)]
+           [vvw (RL 30 (append vw '()))]
+           [pvw (RL 30 (append vw '()))]
+           [syls (RL 30 `((,fcn ,pvw) (,vvw) (,vvw ,pcn) (,fcn ,pvw ,pcn)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
+     '())))
+
 (define (word lang [wn 4] [wr #t])
   ((Lang-rep lang) ((Lang-raw lang) (if wr (add1 (random wn)) wn))))
 (define (name lang [wn 4] [wr #t])
@@ -323,7 +353,7 @@
        langs))
 (define langlist
   (list Lat Ertydon Dwarvish Skif Anavasi Aiha Aluvai Ceirene Mahlirou Obsidian 
-        Elemental Peskae Gnomish Eriali))
+        Elemental Peskae Gnomish Eriali Svaaric Gemstone))
 
 (define (text lang n [wn 4] [wr #t])
   (apply string-append (map (λ (s) (string-append s " ")) (words lang n wn wr))))
