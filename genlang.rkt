@@ -127,7 +127,7 @@
      wrd
      '())))
 
-(deflang Skif
+(deflang Kayfal
   (λ ()
     (let* ([cn (RL 15 '(s k f c d t n l r m v h nd sk y st kh sh p b j w g z x))]
            [vw (RL 15 '(e a i u o))]
@@ -319,6 +319,45 @@
      wrd
      '())))
 
+(deflang Enemy
+  (λ ()
+    (let* ([cn '(t k s f d r g l p n b ts m x h z)]
+           [fcn (RL 15 (append cn '(v)))]
+           [pcn (RL 15 (append cn '(sk st)))]
+           [vw '(e a i o u)]
+           [vvw (RL 30 (append vw '()))]
+           [pvw (RL 30 (append vw '(ye ya yi yo)))]
+           [syls (RL 30 `((,fcn ,pvw) (,vvw) (,vvw ,pcn) (,fcn ,pvw ,pcn)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
+     '())))
+
+(deflang Edie
+  (λ ()
+    (let* ([cn '(b c d f g h j k l m n p q r s t v w x y z 
+                   ch sh th ts st)]
+           [vw '(a e i o u y)]
+           [syls (RL 30 `((,cn ,vw) (,cn ,vw ,cn) (,vw) (,vw ,cn)))]
+           [fsyl `(,vw d ,vw)])
+      (apply string-append (append (map symbol->string (map one-of fsyl)) 
+                                   (map symbol->string (map one-of (one-of syls)))))))
+  identity)
+(deflang Emily
+  (λ ()
+    (let* ([cn '(b c d f g h j k l m n p q r s t v w x y z 
+                   ch sh th ts st)]
+           [vw '(a e i o u y)]
+           [syls (RL 30 `((,cn ,vw) (,cn ,vw ,cn) (,vw) (,vw ,cn)))]
+           [fsyl (RL 30 `((,vw m l) (,vw m ,vw l) (,vw m)))])
+      (apply string-append (append (map symbol->string (map one-of (one-of fsyl))) 
+                                   (map symbol->string (map one-of (one-of syls)))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
+     '([#rx"^([^l]*)$" "\\1l"]))))
+
 (define (word lang [wn 4] [wr #t])
   ((Lang-rep lang) ((Lang-raw lang) (if wr (add1 (random wn)) wn))))
 (define (name lang [wn 4] [wr #t])
@@ -352,8 +391,12 @@
                nlist))) 
        langs))
 (define langlist
-  (list Lat Ertydon Dwarvish Skif Anavasi Aiha Aluvai Ceirene Mahlirou Obsidian 
-        Elemental Peskae Gnomish Eriali Svaaric Gemstone))
+  (list Lat Ertydon Dwarvish Kayfal Anavasi Aiha Aluvai Ceirene Mahlirou Obsidian 
+        Elemental Peskae Gnomish Eriali Svaaric Gemstone Enemy))
+(define short-langlist
+  (list Lat Dwarvish Kayfal Anavasi Aiha Aluvai Mahlirou Obsidian Peskae Gnomish Eriali Gemstone))
+(define fant-langlist
+  (list Lat Dwarvish Mahlirou Obsidian Gnomish))
 
 (define (text lang n [wn 4] [wr #t])
   (apply string-append (map (λ (s) (string-append s " ")) (words lang n wn wr))))
