@@ -59,8 +59,8 @@
     (let* ([cn '(s l n r f v m t d p k b dh th z)]
            [fcn (RL 15 (append cn '(h)))]
            [pcn (RL 15 (append cn '(nn rr ss ll ff mm zz)))]
-           [avw (RL 30 '(é í á ä ê â î ú ó))]
-           [yvw (RL 30 '(í ê ó ä á é ú))]
+           [avw (RL 30 '(é í á ä ê â î ú û ó))]
+           [yvw (RL 30 '(í ê ó ä á é ú â))]
            [syls (RL 30 `((,fcn ,avw) (,avw ,pcn) (,fcn ,avw ,pcn) (,avw)
                                       (,fcn y ,yvw) (,fcn y ,yvw ,pcn) (y ,yvw ,pcn) (y ,yvw)))])
       (apply string-append (map symbol->string (map one-of (one-of syls))))))
@@ -92,14 +92,14 @@
      wrd
      '([#rx"shh" "sh"]))))
 
-(deflang Eriali "???"
+(deflang Nuimena "Nuime"
   (λ ()
-    (let* ([cn '(l r n m t d s th k v f h z dh sh zh)]
+    (let* ([cn '(l r n m t d s th k v f h z dh sh zh kh gh)]
            [fcn (RL 15 (append cn '(p b)))]
            [pcn (RL 15 (append cn '()))]
-           [vw '(e i a u y o)]
+           [vw '(e i a u o)]
            [vvw (RL 30 (append vw '()))]
-           [pvw (RL 30 (append vw '()))]
+           [pvw (RL 30 (append vw '(y)))]
            [syls (RL 30 `((,vvw ,pcn) (,fcn ,pvw) (,fcn ,pvw ,pcn) (,vvw)))])
       (apply string-append (map symbol->string (map one-of (one-of syls))))))
   (λ (wrd)
@@ -289,7 +289,8 @@
   (λ (wrd)
     (regexp-replaces
      wrd
-     '())))
+     '([#rx"lll+" "ll"] [#rx"rrr+" "rr"] [#rx"sss+" "ss"] [#rx"zzz+" "zz"] [#rx"nnn+" "nn"]
+                        [#rx"mmm+" "mm"] [#rx"fff+" "ff"] [#rx"vvv+" "vv"]))))
 
 (deflang Gnomish "Eberron"
   (λ ()
@@ -334,7 +335,40 @@
   (λ (wrd)
     (regexp-replaces
      wrd
+     '([#rx"sz" "ss"] [#rx"ds" "dz"] [#rx"tz" "ts"]))))
+
+(deflang Nenastine "Nenassa"
+  (λ ()
+    (let* ([cn '(n l m r s v f t k d p b th sh z)]
+           [fcn (RL 15 (append cn '(h)))]
+           [pcn (RL 15 (append cn '()))]
+           [vw '(a e i u o ai)]
+           [vvw (RL 30 (append vw '()))]
+           [pvw (RL 30 (append vw '(ya ye yi yu yo)))]
+           [syls (RL 30 `((,fcn ,pvw) (,vvw ,pcn) (,vvw) (,fcn ,pvw ,pcn)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
+     '([#rx"^([^aeiou]*)y" "\\1"] [#rx"(y.)y" "\\1i"] [#rx"([^aeiou][^aeiou])y" "\\1i"]
+                                  [#px"([aeiou])\\1" "\\1"]))))
+
+(deflang Darall "Kitaloei"
+  (λ ()
+    (let* ([cn '(t f s d v p k b g r m l n z h)]
+           [fcn (RL 15 cn)]
+           [pcn (RL 15 '(mm nn ll rr))]
+           [vw '(i e u o a)]
+           [vvw (RL 30 (append vw '()))]
+           [pvw (RL 30 (append vw '()))]
+           [syls (RL 60 `((,fcn ,pvw) (,vvw) (,vvw ,pcn) (,fcn ,pvw ,pcn)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
      '())))
+
+
 
 (define (word lang [wn 4] [wr #t])
   ((Lang-rep lang) ((Lang-raw lang) (if wr (add1 (random wn)) wn))))
@@ -369,12 +403,12 @@
                nlist))) 
        langs))
 (define langlist
-  (list Lat Elemental Eriali Ertydon Dwarvish Kayfal Anavasi Aiha Aluvai Ceirene Enemy Mahlirou 
-        Obsidian Peskae Gnomish Svaaric Gemstone))
+  (list Lat Elemental Nuimena Ertydon Dwarvish Kayfal Anavasi Aiha Aluvai Ceirene Enemy Mahlirou 
+        Obsidian Peskae Gnomish Svaaric Gemstone Nenastine))
 (define short-langlist
-  (list Lat Eriali Dwarvish Kayfal Anavasi Aiha Aluvai Mahlirou Obsidian Peskae Gnomish Gemstone))
+  (list Lat Nuimena Dwarvish Kayfal Anavasi Aiha Aluvai Mahlirou Obsidian Peskae Gnomish Gemstone))
 (define fant-langlist
-  (list Lat Dwarvish Mahlirou Obsidian Gnomish))
+  (list Lat Dwarvish Mahlirou Obsidian Gnomish Nenastine))
 
 (define (text lang n [wn 4] [wr #t])
   (apply string-append (map (λ (s) (string-append s " ")) (words lang n wn wr))))
