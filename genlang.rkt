@@ -79,24 +79,42 @@
       (apply string-append (map symbol->string (map one-of (one-of syls))))))
   identity)
 
-(deflang Elemental "???"
+(deflang Phon "generic"
+  (λ ()        ;               c ç       j
+    (let* ([cn '(l r m n ŋ þ ð ʃ ʒ ц ч ծ ջ w y h
+                   p b f v t d s z k g х γ)]
+           [vw '(a e i o u y æ)]
+           [syls (RL 30 `((,cn ,vw) (,cn ,vw ,cn) (,vw) (,vw ,cn)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  identity)
+
+(deflang Ainurin "Arda"
+  (λ ()
+    (let* ([cn '(l r m n h þ ð ʃ ʒ w y
+                   p b f v t d s z k g х γ)]
+           [vw '(a e i o u â ê ô û æ)]
+           [syls (RL 30 `((,cn ,vw) (,vw ,cn) (,vw) (,cn ,vw ,cn)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  identity)
+
+(deflang Eivarne "Threefold" ; Eianvar
   (λ ()
     (let* ([cn '(v r l t k m n s sh f d p th b z)]
            [fcn (RL 15 (append cn '(w y)))]
            [pcn (RL 15 (append cn '(h)))]
-           [vw (RL 30 '(e a i u o ei ae iu))]
+           [vw (RL 30 '(e a i u o ei ai ae iu))]
            [syls (RL 30 `((,fcn ,vw) (,vw ,pcn) (,fcn ,vw ,pcn) (,vw)))])
       (apply string-append (map symbol->string (map one-of (one-of syls))))))
   (λ (wrd)
     (regexp-replaces
      wrd
-     '([#rx"shh" "sh"]))))
+     '())))
 
 (deflang Nuimena "Nuime"
   (λ ()
-    (let* ([cn '(l r n m t d s th k v f h z dh sh zh kh gh)]
+    (let* ([cn '(l r n m t d s th k v f h z dh sh zh kh)]
            [fcn (RL 15 (append cn '(p b)))]
-           [pcn (RL 15 (append cn '()))]
+           [pcn (RL 15 (append cn '(mb mp nd nt)))]
            [vw '(e i a u o)]
            [vvw (RL 30 (append vw '()))]
            [pvw (RL 30 (append vw '(y)))]
@@ -105,7 +123,7 @@
   (λ (wrd)
     (regexp-replaces
      wrd
-     '())))
+     '([#rx"hh" "h"]))))
 
 (deflang Ertydon "Elcenia"
   (λ ()
@@ -209,7 +227,7 @@
 
 (deflang Aluvai "Suranse"
   (λ ()
-    (let* ([cn '(s f z d v th t k p l n r m b sh ch j w sk)]
+    (let* ([cn '(s f z d v th t k p l n r m b sh ch w sk)]
            [fcn (RL 15 (append cn '(kh)))]
            [pcn (RL 15 (append cn '(ss rr)))]
            [vw (RL 30 '(i e a y u o ae ai))]
@@ -222,7 +240,7 @@
 
 (deflang Ceirene "Suranse"
   (λ ()
-    (let* ([cn '(m r n l s t v c d k p f th b sh j w ts sk)]
+    (let* ([cn '(m r n l s t v c d k p f th b sh w ts sk)]
            [fcn (RL 15 (append cn '()))]
            [pcn (RL 15 (append cn '(ns tt)))]
            [vw (RL 30 '(a e i o u y ai ae))]
@@ -322,7 +340,7 @@
      wrd
      '())))
 
-(deflang Gemstone "steven universe"
+(deflang Gemstone "Indigo"
   (λ ()
     (let* ([cn '(l n r m v z f s d t k p h g b)]
            [fcn (RL 15 (append cn '()))]
@@ -368,6 +386,37 @@
      wrd
      '())))
 
+(deflang Mirestava "shift-elements"
+  (λ ()
+    (let* ([cn '(l p t k m s d r n g v f z h b x j c
+                   sk st)]
+           [fcn (RL 15 (append cn '(pl tr pr dr tl sl br zr dl sr zl bl kr kl)))]
+           [pcn (RL 15 (append cn '(mb mp nd nt)))]
+           [vw '(a u i e o)]
+           [vvw (RL 30 (append vw '()))]
+           [pvw (RL 30 (append vw '()))]
+           [syls (RL 60 `((,fcn ,pvw) (,vvw) (,vvw ,pcn) (,fcn ,pvw ,pcn)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
+     '())))
+
+(deflang Alticar "Dishonored"
+  (λ ()
+    (let* ([cn '(s t v k l d f n p r m h b z c q)]
+           [fcn (RL 15 cn)]
+           [pcn (RL 30 '(n l r m nd ld lt nt rd))]
+           [vw '(e u a i o)]
+           [vvw (RL 30 (append vw '()))]
+           [pvw (RL 30 (append vw '()))]
+           [syls (RL 60 `((,fcn ,pvw) (,vvw) (,vvw ,pcn) (,fcn ,pvw ,pcn)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
+     '())))
+
 
 
 (define (word lang [wn 4] [wr #t])
@@ -403,8 +452,8 @@
                nlist))) 
        langs))
 (define langlist
-  (list Lat Elemental Nuimena Ertydon Dwarvish Kayfal Anavasi Aiha Aluvai Ceirene Enemy Mahlirou 
-        Obsidian Peskae Gnomish Svaaric Gemstone Nenastine))
+  (list Lat Eivarne Nuimena Ertydon Dwarvish Kayfal Anavasi Aiha Aluvai Ceirene Enemy Mahlirou 
+        Obsidian Peskae Gnomish Svaaric Gemstone Nenastine Darall Mirestava Alticar))
 (define short-langlist
   (list Lat Nuimena Dwarvish Kayfal Anavasi Aiha Aluvai Mahlirou Obsidian Peskae Gnomish Gemstone))
 (define fant-langlist
