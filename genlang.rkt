@@ -417,6 +417,34 @@
      wrd
      '())))
 
+(deflang Keriani "Ankeda"
+  (λ ()
+    (let* ([cn (RL 15 '(k t s f p d v z b h l r n m))]
+           [cnx (RL 15 '(k t s f p d v z b))]
+           [cnr (RL 30 '(l r))]
+           [cnn (RL 30 '(n m))]
+           [vw (RL 30 '(e a i u o))]
+           [syls (RL 60 `((,cn ,vw) (,vw) (,cnx ,cnr ,vw) (,cn ,vw ,cnn) (,cnx ,cnr ,vw ,cnn) (,cn ,vw ,cnn ,cnx) (,cnx ,cnr ,vw ,cnn ,cnx)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
+     '([#px"([aeiou])\\1" "\\1"]))))
+
+(deflang Laantharei "Ankeda"
+  (λ ()
+    (let* ([cn '(r s k l f n m t p v d z)]
+           [fcn (RL 15 cn)]
+           [pcn (RL 30 (append cn '(ss ts nn)))]
+           [vw '(a i u e o)]
+           [vvw (RL 30 (append vw '()))]
+           [pvw (RL 30 (append vw '()))]
+           [syls (RL 60 `((,fcn ,pvw) (,vvw) (,vvw ,pcn) (,fcn ,pvw ,pcn)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
+     '([#px"(.)\\1\\1" "\\1\\1"] [#rx"s[mn]" "ss"]))))
 
 
 (define (word lang [wn 4] [wr #t])
@@ -429,19 +457,25 @@
 (define (names lang n [wn 4] [wr #t])
   (map string-titlecase (words lang n wn wr)))
 
-(define (matching-name lang expr [wn 4] [wr #t])
+(define max-tries 5000)
+
+(define (matching-name lang expr [wn 4] [wr #t] [iter 0])
   (let ([nm (name lang wn wr)])
     (if (regexp-match? expr nm)
         nm
-        (matching-name lang expr wn wr))))
+        (if (> iter max-tries)
+            ""
+            (matching-name lang expr wn wr (add1 iter))))))
 (define (matching-names lang expr n [wn 4] [wr #t])
   (build-list n (λ (n) (matching-name lang expr wn wr))))
 
-(define (matches-name lang exprs [wn 4] [wr #t])
+(define (matches-name lang exprs [wn 4] [wr #t] [iter 0])
   (let ([nm (name lang wn wr)])
     (if (andmap (λ (expr) (regexp-match? expr nm)) exprs)
         nm
-        (matches-name lang exprs wn wr))))
+        (if (> iter max-tries)
+            ""
+        (matches-name lang exprs wn wr (add1 iter))))))
 (define (matches-names lang exprs n [wn 4] [wr #t])
   (build-list n (λ (n) (matches-name lang exprs wn wr))))
 (define (match-names-in langs exprs n [wn 4] [incname #t] [wr #t])
@@ -453,7 +487,8 @@
        langs))
 (define langlist
   (list Lat Eivarne Nuimena Ertydon Dwarvish Kayfal Anavasi Aiha Aluvai Ceirene Enemy Mahlirou 
-        Obsidian Peskae Gnomish Svaaric Gemstone Nenastine Darall Mirestava Alticar))
+        Obsidian Peskae Gnomish Svaaric Gemstone Nenastine Darall Mirestava Alticar Keriani
+        Laantharei))
 (define short-langlist
   (list Lat Nuimena Dwarvish Kayfal Anavasi Aiha Aluvai Mahlirou Obsidian Peskae Gnomish Gemstone))
 (define fant-langlist
