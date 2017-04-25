@@ -146,7 +146,7 @@
  | let's say that ch isn't allowed to be in clusters.
  | Aa syllables are always emphasized so you don't want them next to each other.
  | aa, a, e, i, o, u, Y in Ryganaavlan only...
- | k, s, p, r, v, sh, h, n, t, d, b, f, l, th, ch, G and Y in Ryganaavlan only
+ | m, k, s, p, r, v, sh, h, n, t, d, b, f, l, th, ch, G and Y in Ryganaavlan only
  |#
 (deflang Leraal "Elcenia"
   (λ ()
@@ -160,7 +160,23 @@
   (λ (wrd)
     (regexp-replaces
      wrd
-     '([#px"([^a])\\1" "\\1"] [#rx"aa(..?aa)" "a\\1"]))))
+     '([#rx"h$" "th"] [#px"([^a])\\1" "\\1"] [#rx"aa(..?aa)" "a\\1"]
+                    [#rx"ch([^aeiou])" "\\1"] [#rx"([^aeiou])ch" "\\1"]))))
+
+(deflang Ryganaavlan-Leraal "Elcenia"
+  (λ ()
+    (let* ([cn '(m k s p r v sh n t d b f l th h ch g y)]
+           [fcn (RL 15 (append '(h ch) cn))]
+           [pcn (RL 15 (append '(h) cn))]
+           [vw (RL 30 '(e a i aa o u y))]
+           
+           [syls (RL 30 `((,vw ,pcn) (,fcn ,vw ,pcn)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
+     '([#rx"h$" "th"] [#px"([^a])\\1" "\\1"] [#rx"aa(..?aa)" "a\\1"]
+                    [#rx"ch([^aeiou])" "\\1"] [#rx"([^aeiou])ch" "\\1"]))))
 
 (deflang Dwarvish "Thedas"
   (λ ()
@@ -446,6 +462,21 @@
      wrd
      '([#px"(.)\\1\\1" "\\1\\1"] [#rx"s[mn]" "ss"]))))
 
+(deflang Celestial "[celestial guardians]"
+  (λ ()
+    (let* ([cn (RL 15 '(f v r t l p s k n d m b z h))]
+           [cnx (RL 15 '(f v t p k d b))]
+           [cnr (RL 30 '(l r s))]
+           [cnn (RL 30 '(n m l s))]
+           [vw (RL 30 '(e a i u o ya ye yi yo yu))]
+           [syls (RL 60 `((,cn ,vw) (,vw) (,cnx ,cnr ,vw) (,cn ,vw ,cnn) (,cnx ,cnr ,vw ,cnn) (,cn ,vw ,cnn ,cnx) (,cnx ,cnr ,vw ,cnn ,cnx)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
+     '([#px"([aeiou])\\1" "\\1"] [#rx"s([dbv])" "z\\1"] [#rx"([dbv])s" "\\1z"]
+                                 [#rx"h([^aeiouy])" "\\1"]))))
+
 
 (define (word lang [wn 4] [wr #t])
   ((Lang-rep lang) ((Lang-raw lang) (if wr (add1 (random wn)) wn))))
@@ -488,11 +519,15 @@
 (define langlist
   (list Lat Eivarne Nuimena Ertydon Dwarvish Kayfal Anavasi Aiha Aluvai Ceirene Enemy Mahlirou 
         Obsidian Peskae Gnomish Svaaric Gemstone Nenastine Darall Mirestava Alticar Keriani
-        Laantharei))
+        Laantharei Celestial))
 (define short-langlist
   (list Lat Nuimena Dwarvish Kayfal Anavasi Aiha Aluvai Mahlirou Obsidian Peskae Gnomish Gemstone))
 (define fant-langlist
   (list Lat Dwarvish Mahlirou Obsidian Gnomish Nenastine))
+(define elc-langlist
+  (list Ertydon Leraal Ryganaavlan-Leraal))
+(define weird-langlist
+  (list Tamadh Silsi Phon Ainurin))
 
-(define (text lang n [wn 4] [wr #t])
+(define (text lang [n 50] [wn 4] [wr #t])
   (apply string-append (map (λ (s) (string-append s " ")) (words lang n wn wr))))
