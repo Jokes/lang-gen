@@ -516,6 +516,7 @@
                (list (Lang-name lang) nlist)
                nlist))) 
        langs))
+
 (define langlist
   (list Lat Eivarne Nuimena Ertydon Dwarvish Kayfal Anavasi Aiha Aluvai Ceirene Enemy Mahlirou 
         Obsidian Peskae Gnomish Svaaric Gemstone Nenastine Darall Mirestava Alticar Keriani
@@ -528,6 +529,43 @@
   (list Ertydon Leraal Ryganaavlan-Leraal))
 (define weird-langlist
   (list Tamadh Silsi Phon Ainurin))
+
+(define get-patterns
+  (let ([patternmap
+         (hash
+          ; Kappa
+          'Aral     '(#rx"^A" #rx"a[^aeiou]*[aeiouy]*$")
+          'Serg     '(#rx"^[TSZ]" #rx"r" #rx"k")
+          'Tomis    '(#rx"^[TSZ]")
+          'Dorca    '(#rx"^D" #rx"r" #rx"[ck]")
+          'Rosti    '(#rx"^R" #rx"[sz]" #rx"[td]")
+          'Yuri     '(#rx"ri")
+          'Xav      '(#rx"[SsZz][aeiouy]*[vfp]")
+          'Gregor   '(#rx"([Oo]r)|([Rr]o)")
+          'Ezar     '(#rx"^E[aeiouy*][stdz]")
+          'Dalibor  '(#rx"^[DZTS]" #rx"[lr].*[pvfb].*[lr]")
+          'Vorbarra '(#rx"[AEae]r")
+          'Kosigan  '(#rx"^K[aeiouy]*[stzd]")
+          'Piotr    '(#rx"^[PFBV]" #rx"[tdsz]" #rx"[lr]")
+          'Miles    '(#rx"^[AEISMNTRLF]" #rx".[lr].")
+          'Aaron    '(#rx"^[AEIOU]" #rx"n$")
+          'Maran    '(#rx"[Mm]ar")
+          'Tarro    '(#rx"t")
+          'Luar     '(#rx"[Ll]" #rx"[Rr]")
+          'Chainsaw '(#rx"[sz][aeiouy]*n.*[td]")
+          'Ga*el    '(#rx"^[CGK]")
+          
+          ; Moriwen
+          'Zari     '(#rx"^[SZT]h?[ai]+[^szt][ai]")
+          
+          ; Maggie
+          'Anise    '(#rx"^A[aeiouy]*nn?[aeiouy]*s")
+          'Sawyer   '(#rx"^S.*r")
+          
+          ; Aestrix
+          'Yvette   '(#rx"[Vv]et")
+          )])
+    (λ (s) (hash-ref patternmap s '()))))
 
 (define (text lang [n 50] [wn 4] [wr #t])
   (apply string-append (map (λ (s) (string-append s " ")) (words lang n wn wr))))
