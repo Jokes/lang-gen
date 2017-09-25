@@ -123,7 +123,7 @@
   (λ (wrd)
     (regexp-replaces
      wrd
-     '([#rx"hh" "h"]))))
+     '([#px"(.)\\1" "\\1"]))))
 
 (deflang Ertydon "Elcenia"
   (λ ()
@@ -267,7 +267,7 @@
      wrd
      '())))
 
-(deflang Enemy "Suranse"
+(deflang Ruikni "Suranse"
   (λ ()
     (let* ([cn '(t k s f d r g l p n b ts m x h z)]
            [fcn (RL 15 (append cn '(v)))]
@@ -477,6 +477,84 @@
      '([#px"([aeiou])\\1" "\\1"] [#rx"s([dbv])" "z\\1"] [#rx"([dbv])s" "\\1z"]
                                  [#rx"h([^aeiouy])" "\\1"]))))
 
+(deflang Five "[video game afterlife]"
+  (λ () ; nb: degenerate letters h (consonant), y (vowel)
+    (let* ([cn '()] ; language does not work yet. consonants not implemented
+           [cn1 '(p t þ k)]
+           [cn2 '(f s c x)]
+           [cn3 '(b d ð g)]
+           [cn4 '(v z j q)]
+           [cn5 '(m l n r)]
+           [vw '(o u a e i)]
+           [syls (RL 60 `((,cn ,vw) (,vw) (,vw ,cn) (,cn ,vw ,cn)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
+     '())))
+
+(deflang Avirisei "Nightmare"
+  (λ ()
+    (let* ([cn (RL 15 '(t f r s v l p n k m d z dz b ts))]
+           [cnx (RL 15 '(t f s v p k d z b))]
+           [cnr (RL 30 '(r l s))]
+           [cnn (RL 30 '(l n m s))]
+           [vw (RL 30 '(a e u i o))]
+           [syls (RL 60 `((,cn ,vw) (,vw) (,cnx ,cnr ,vw) (,cn ,vw ,cnn) (,cnx ,cnr ,vw ,cnn) (,cn ,vw ,cnn ,cnx) (,cnx ,cnr ,vw ,cnn ,cnx)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
+     '([#px"([aeiou])\\1" "\\1"] [#rx"s([dbv])" "z\\1"] [#rx"([dbv])s" "\\1z"]
+                                 [#rx"h([^aeiouy])" "\\1"]))))
+
+(deflang Arivath "Corth" ; Arifea/Arifene, Ashari
+  (λ () 
+    (let* ([cn '(f t n s v l d th r p k m sh z zh b dh kh g)]
+           [fcn (RL 15 (append '(h) cn '(ts tc dz dj)))]
+           [pcn (RL 15 cn)]
+           [vw '(a o i e u ya yo yi ye yu)]
+           [vvw (RL 30 (append vw '()))]
+           [pvw (RL 30 (append vw '()))]
+           [syls (RL 60 `((,fcn ,pvw) (,vvw) (,vvw ,pcn) (,fcn ,pvw ,pcn)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
+     '([#rx"hh" "h"]))))
+
+(deflang Parikai "Sunfire"
+  (λ ()
+    (let* ([cn '(s v f t p l z n k m h r d b g w tc dj x q)]
+           [fcn (RL 15 cn)]
+           [pcn (RL 15 '(l r n m))]
+           [vw '(a i e u o)]
+           [vvw (RL 30 (append vw '()))]
+           [pvw (RL 30 (append vw '()))]
+           [syls (RL 60 `((,fcn ,pvw) (,vvw) (,vvw ,pcn) (,fcn ,pvw ,pcn)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
+     '())))
+
+(deflang Vàjo "Kelovea"
+  (λ ()
+    (let* ([cn '(l m n r v k h ʒ t j d dy ty f s z c x)]
+           [fcn (RL 15 cn)]
+           [pcn (RL 15 (append cn '(g)))]
+           [vw '(u i e á o à a å ai au eə ei oi əu iə uə)]
+           [vvw (RL 30 (append vw '()))]
+           [pvw (RL 30 (append vw '()))]
+           [syls (RL 60 `((,fcn ,pvw) (,vvw) (,vvw ,pcn) (,fcn ,pvw ,pcn)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
+     '([#rx"(d|j|s|sh|ty)$" "\\1"] [#rx"g(.+)$" "\\1"]
+                                [#rx"([^uieáoàaåər])([^uieáoàaåəy])" "\\1"]
+                                [#rx"ʒ" "zh"] [#rx"c" "sh"] [#rx"x" "ch"]))))
+
 
 (define (word lang [wn 4] [wr #t])
   ((Lang-rep lang) ((Lang-raw lang) (if wr (add1 (random wn)) wn))))
@@ -518,9 +596,9 @@
        langs))
 
 (define langlist
-  (list Lat Eivarne Nuimena Ertydon Dwarvish Kayfal Anavasi Aiha Aluvai Ceirene Enemy Mahlirou 
+  (list Lat Eivarne Nuimena Ertydon Dwarvish Kayfal Anavasi Aiha Aluvai Ceirene Ruikni Mahlirou 
         Obsidian Peskae Gnomish Svaaric Gemstone Nenastine Darall Mirestava Alticar Keriani
-        Laantharei Celestial))
+        Laantharei Celestial Avirisei Arivath Parikai))
 (define short-langlist
   (list Lat Nuimena Dwarvish Kayfal Anavasi Aiha Aluvai Mahlirou Obsidian Peskae Gnomish Gemstone))
 (define fant-langlist
@@ -528,14 +606,14 @@
 (define elc-langlist
   (list Ertydon Leraal Ryganaavlan-Leraal))
 (define weird-langlist
-  (list Tamadh Silsi Phon Ainurin))
+  (list Tamadh Silsi Phon Ainurin Vàjo))
 
 (define get-patterns
   (let ([patternmap
          (hash
           ; Kappa
           'Aral     '(#rx"^A" #rx"a[^aeiou]*[aeiouy]*$")
-          'Serg     '(#rx"^[TSZ]" #rx"r" #rx"k")
+          'Serg     '(#rx"^[TSZ]" #rx"r" #rx"[kcq]")
           'Tomis    '(#rx"^[TSZ]")
           'Dorca    '(#rx"^D" #rx"r" #rx"[ck]")
           'Rosti    '(#rx"^R" #rx"[sz]" #rx"[td]")
@@ -551,9 +629,12 @@
           'Aaron    '(#rx"^[AEIOU]" #rx"n$")
           'Maran    '(#rx"[Mm]ar")
           'Tarro    '(#rx"t")
-          'Luar     '(#rx"[Ll]" #rx"[Rr]")
+          'Luar     '(#rx"[Ll]" #rx"[Rr]" #rx"[^aeiou]$")
+          'Nimire   '(#rx"^[AEIOUMNLR][aeiouymnlr]*$" #rx"i")
+          'Eights   '(#rx"[Aa]nn?[aei]")
           'Chainsaw '(#rx"[sz][aeiouy]*n.*[td]")
-          'Ga*el    '(#rx"^[CGK]")
+          'Ga*el    '(#rx"^[CGK]" #rx"[mnrl]")
+          'Libby    '(#rx"[Ll][aeiou]*[sz]")
           
           ; Moriwen
           'Zari     '(#rx"^[SZT]h?[ai]+[^szt][ai]")
@@ -561,9 +642,13 @@
           ; Maggie
           'Anise    '(#rx"^A[aeiouy]*nn?[aeiouy]*s")
           'Sawyer   '(#rx"^S.*r")
+          'Ante     '(#rx"^A" "n" "t")
           
           ; Aestrix
           'Yvette   '(#rx"[Vv]et")
+          
+          ; Root
+          'Kazi     '(#rx"^[KZ]" #rx"[Zz]")
           )])
     (λ (s) (hash-ref patternmap s '()))))
 
