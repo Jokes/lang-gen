@@ -543,7 +543,7 @@
     (let* ([cn '(l m n r v k h ʒ t j d dy ty f s z c x)]
            [fcn (RL 15 cn)]
            [pcn (RL 15 (append cn '(g)))]
-           [vw '(u i e á o à a å ai au eə ei oi əu iə uə)]
+           [vw '(u i e á o à a å ai au eá ei oi áu iá uá)]
            [vvw (RL 30 (append vw '()))]
            [pvw (RL 30 (append vw '()))]
            [syls (RL 60 `((,fcn ,pvw) (,vvw) (,vvw ,pcn) (,fcn ,pvw ,pcn)))])
@@ -552,8 +552,22 @@
     (regexp-replaces
      wrd
      '([#rx"(d|j|s|sh|ty)$" "\\1"] [#rx"g(.+)$" "\\1"]
-                                [#rx"([^uieáoàaåər])([^uieáoàaåəy])" "\\1"]
+                                [#rx"([^uieáoàaår])([^uieáoàaåy])" "\\1"]
                                 [#rx"ʒ" "zh"] [#rx"c" "sh"] [#rx"x" "ch"]))))
+
+(deflang Avikana "Amenta"
+  (λ ()
+    (let* ([cn '(k m n d v t p s r l h c g)]
+           [fcn (RL 15 cn)]
+           [vw '(a i e o u)]
+           [vvw (RL 30 (append vw '()))]
+           [pvw (RL 30 (append vw vw '(ya yi ei yo yu)))]
+           [syls (RL 60 `((,fcn ,pvw) (,vvw)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
+     '())))
 
 
 (define (word lang [wn 4] [wr #t])
@@ -598,7 +612,7 @@
 (define langlist
   (list Lat Eivarne Nuimena Ertydon Dwarvish Kayfal Anavasi Aiha Aluvai Ceirene Ruikni Mahlirou 
         Obsidian Peskae Gnomish Svaaric Gemstone Nenastine Darall Mirestava Alticar Keriani
-        Laantharei Celestial Avirisei Arivath Parikai))
+        Laantharei Celestial Avirisei Arivath Parikai Avikana))
 (define short-langlist
   (list Lat Nuimena Dwarvish Kayfal Anavasi Aiha Aluvai Mahlirou Obsidian Peskae Gnomish Gemstone))
 (define fant-langlist
@@ -613,7 +627,7 @@
          (hash
           ; Kappa
           'Aral     '(#rx"^A" #rx"a[^aeiou]*[aeiouy]*$")
-          'Serg     '(#rx"^[TSZ]" #rx"r" #rx"[kcq]")
+          'Serg     '(#rx"^[TSZ]" #rx"r" #rx"[kcqg]")
           'Tomis    '(#rx"^[TSZ]")
           'Dorca    '(#rx"^D" #rx"r" #rx"[ck]")
           'Rosti    '(#rx"^R" #rx"[sz]" #rx"[td]")
@@ -633,6 +647,7 @@
           'Nimire   '(#rx"^[AEIOUMNLR][aeiouymnlr]*$" #rx"i")
           'Eights   '(#rx"[Aa]nn?[aei]")
           'Chainsaw '(#rx"[sz][aeiouy]*n.*[td]")
+          'Sefton   '(#rx"[SsTt].*[pfbv]")
           'Ga*el    '(#rx"^[CGK]" #rx"[mnrl]")
           'Libby    '(#rx"[Ll][aeiou]*[sz]")
           
@@ -643,6 +658,11 @@
           'Anise    '(#rx"^A[aeiouy]*nn?[aeiouy]*s")
           'Sawyer   '(#rx"^S.*r")
           'Ante     '(#rx"^A" "n" "t")
+          'Alle     '(#rx"(^Al)|(al[aeiouy]*$)")
+          'Liri     '(#rx"[Ll][iy]r")
+          'Sissy    '(#rx"[CScs][iy]s")
+          'Mirelle  '(#rx"^M[aeiouy]*r+[aeiouy]*l+")
+          'Endevar  '(#rx"^En" #rx"[vf]")
           
           ; Aestrix
           'Yvette   '(#rx"[Vv]et")
