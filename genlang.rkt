@@ -609,6 +609,15 @@
                nlist))) 
        langs))
 
+(define (quick-staple piece langs [wn 4] [wr #t])
+  (map (λ (l) (string-append piece (word l wn wr))) langs))
+(define (staple piece langs [exprs '()] [wn 4] [wr #t])
+  (map (λ (l) 
+         (string-titlecase 
+          (string-append piece 
+                         (matches-name l exprs wn wr))))
+       langs))
+
 (define langlist
   (list Lat Eivarne Nuimena Ertydon Dwarvish Kayfal Anavasi Aiha Aluvai Ceirene Ruikni Mahlirou 
         Obsidian Peskae Gnomish Svaaric Gemstone Nenastine Darall Mirestava Alticar Keriani
@@ -666,6 +675,7 @@
           
           ; Aestrix
           'Yvette   '(#rx"[Vv]et")
+          'Nadia    '(#rx"[Aa]" #rx"[Ii]" #rx"[Dd]" #rx"[Nn]")
           
           ; Root
           'Kazi     '(#rx"^[KZ]" #rx"[Zz]")
