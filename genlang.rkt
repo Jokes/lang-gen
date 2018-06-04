@@ -653,7 +653,7 @@
           'Maran    '(#rx"[Mm]ar")
           'Tarro    '(#rx"t")
           'Luar     '(#rx"[Ll]" #rx"[Rr]" #rx"[^aeiou]$")
-          'Nimire   '(#rx"^[AEIOUMNLR][aeiouymnlr]*$" #rx"i")
+          'Nimire   '(#rx"^[AEIOUYMNLR][aeiouymnlr]*$" #rx"i")
           'Eights   '(#rx"[Aa]nn?[aei]")
           'Chainsaw '(#rx"[sz][aeiouy]*n.*[td]")
           'Sefton   '(#rx"[SsTt].*[pfbv]")
@@ -672,6 +672,8 @@
           'Sissy    '(#rx"[CScs][iy]s")
           'Mirelle  '(#rx"^M[aeiouy]*r+[aeiouy]*l+")
           'Endevar  '(#rx"^En" #rx"[vf]")
+          'Hazel    '(#rx"^H[aeiouy]+([fsvz]+|[tdsz]h)[aeiouy]+[lr]")
+          'Khythen  '(#rx"^[KC]h?[aeiouy]+[^aeiouy]+[aeiouy]+n")
           
           ; Aestrix
           'Yvette   '(#rx"[Vv]et")
