@@ -161,7 +161,7 @@
     (regexp-replaces
      wrd
      '([#rx"h$" "th"] [#px"([^a])\\1" "\\1"] [#rx"aa(..?aa)" "a\\1"]
-                    [#rx"ch([^aeiou])" "\\1"] [#rx"([^aeiou])ch" "\\1"]))))
+                      [#rx"ch([^aeiou])" "\\1"] [#rx"([^aeiou])ch" "\\1"]))))
 
 (deflang Ryganaavlan-Leraal "Elcenia"
   (λ ()
@@ -176,7 +176,7 @@
     (regexp-replaces
      wrd
      '([#rx"h$" "th"] [#px"([^a])\\1" "\\1"] [#rx"aa(..?aa)" "a\\1"]
-                    [#rx"ch([^aeiou])" "\\1"] [#rx"([^aeiou])ch" "\\1"]))))
+                      [#rx"ch([^aeiou])" "\\1"] [#rx"([^aeiou])ch" "\\1"]))))
 
 (deflang Dwarvish "Thedas"
   (λ ()
@@ -552,8 +552,8 @@
     (regexp-replaces
      wrd
      '([#rx"(d|j|s|sh|ty)$" "\\1"] [#rx"g(.+)$" "\\1"]
-                                [#rx"([^uieáoàaår])([^uieáoàaåy])" "\\1"]
-                                [#rx"ʒ" "zh"] [#rx"c" "sh"] [#rx"x" "ch"]))))
+                                   [#rx"([^uieáoàaår])([^uieáoàaåy])" "\\1"]
+                                   [#rx"ʒ" "zh"] [#rx"c" "sh"] [#rx"x" "ch"]))))
 
 (deflang Avikana "Amenta"
   (λ ()
@@ -563,6 +563,21 @@
            [vvw (RL 30 (append vw '()))]
            [pvw (RL 30 (append vw vw '(ya yi ei yo yu)))]
            [syls (RL 60 `((,fcn ,pvw) (,vvw)))])
+      (apply string-append (map symbol->string (map one-of (one-of syls))))))
+  (λ (wrd)
+    (regexp-replaces
+     wrd
+     '())))
+
+(deflang Cubist "sex cube"
+  (λ ()
+    (let* ([cn '(k m n d sh z b r l t f v p zh s)]
+           [fcn (RL 15 (append cn '(h)))]
+           [pcn (RL 15 cn)]
+           [vw '(e a u i)]
+           [vvw (RL 30 (append vw '()))]
+           [pvw (RL 30 (append vw vw '(ei ai ya yi yu)))]
+           [syls (RL 60 `((,fcn ,pvw) (,vvw) (,vvw ,pcn) (,fcn ,pvw ,pcn)))])
       (apply string-append (map symbol->string (map one-of (one-of syls))))))
   (λ (wrd)
     (regexp-replaces
@@ -598,7 +613,7 @@
         nm
         (if (> iter max-tries)
             ""
-        (matches-name lang exprs wn wr (add1 iter))))))
+            (matches-name lang exprs wn wr (add1 iter))))))
 (define (matches-names lang exprs n [wn 4] [wr #t])
   (build-list n (λ (n) (matches-name lang exprs wn wr))))
 (define (match-names-in langs exprs n [wn 4] [incname #t] [wr #t])
@@ -617,11 +632,13 @@
           (string-append piece 
                          (matches-name l exprs wn wr))))
        langs))
+(define (quick-tail piece langs [wn 4] [wr #t])
+  (map (λ (l) (string-titlecase (string-append (word l wn wr) piece))) langs))
 
 (define langlist
   (list Lat Eivarne Nuimena Ertydon Dwarvish Kayfal Anavasi Aiha Aluvai Ceirene Ruikni Mahlirou 
         Obsidian Peskae Gnomish Svaaric Gemstone Nenastine Darall Mirestava Alticar Keriani
-        Laantharei Celestial Avirisei Arivath Parikai Avikana))
+        Laantharei Celestial Avirisei Arivath Parikai Avikana Cubist))
 (define short-langlist
   (list Lat Nuimena Dwarvish Kayfal Anavasi Aiha Aluvai Mahlirou Obsidian Peskae Gnomish Gemstone))
 (define fant-langlist
@@ -651,7 +668,7 @@
           'Miles    '(#rx"^[AEISMNTRLF]" #rx".[lr].")
           'Aaron    '(#rx"^[AEIOU]" #rx"n$")
           'Maran    '(#rx"[Mm]ar")
-          'Tarro    '(#rx"t")
+          'Tarro    '(#rx"[Tt]" #rx"[lro]")
           'Luar     '(#rx"[Ll]" #rx"[Rr]" #rx"[^aeiou]$")
           'Nimire   '(#rx"^[AEIOUYMNLR][aeiouymnlr]*$" #rx"i")
           'Eights   '(#rx"[Aa]nn?[aei]")
@@ -659,6 +676,8 @@
           'Sefton   '(#rx"[SsTt].*[pfbv]")
           'Ga*el    '(#rx"^[CGK]" #rx"[mnrl]")
           'Libby    '(#rx"[Ll][aeiou]*[sz]")
+          'Lynne    '(#px"(.)\\1")
+          'Chantal  '(#rx"[LlNn]" #rx"^[^r]*$")
           
           ; Moriwen
           'Zari     '(#rx"^[SZT]h?[ai]+[^szt][ai]")
