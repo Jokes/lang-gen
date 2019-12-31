@@ -376,7 +376,7 @@
     (let* ([cn '(n l m r s v f t k d p b th sh z)]
            [fcn (RL 15 (append cn '(h)))]
            [pcn (RL 15 (append cn '()))]
-           [vw '(a e i u o ai)]
+           [vw '(a e i u o ai)] ; and sometimes y
            [vvw (RL 30 (append vw '()))]
            [pvw (RL 30 (append vw '(ya ye yi yu yo)))]
            [syls (RL 30 `((,fcn ,pvw) (,vvw ,pcn) (,vvw) (,fcn ,pvw ,pcn)))])
@@ -623,6 +623,10 @@
                (list (Lang-name lang) nlist)
                nlist))) 
        langs))
+(define (no-blank-names langs exprs n [wn 4] [incname #t] [wr #t])
+  (let ([grab (if incname second identity)])
+    (filter (λ (l) (not (equal? (grab l) '(""))))
+            (match-names-in langs exprs n wn incname wr))))
 
 (define (quick-staple piece langs [wn 4] [wr #t])
   (map (λ (l) (string-append piece (word l wn wr))) langs))
@@ -659,6 +663,7 @@
           'Rosti    '(#rx"^R" #rx"[sz]" #rx"[td]")
           'Yuri     '(#rx"ri")
           'Xav      '(#rx"[SsZz][aeiouy]*[vfp]")
+          'Honore   '(#rx"[Nn]" #rx"[Rr]")
           'Gregor   '(#rx"([Oo]r)|([Rr]o)")
           'Ezar     '(#rx"^E[aeiouy*][stdz]")
           'Dalibor  '(#rx"^[DZTS]" #rx"[lr].*[pvfb].*[lr]")
