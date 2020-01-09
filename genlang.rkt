@@ -683,6 +683,7 @@
           'Libby    '(#rx"[Ll][aeiou]*[sz]")
           'Lynne    '(#px"(.)\\1")
           'Chantal  '(#rx"[LlNn]" #rx"^[^r]*$")
+          'Dragon   '(#rx"[Aa][sz]")
           
           ; Moriwen
           'Zari     '(#rx"^[SZT]h?[ai]+[^szt][ai]")
